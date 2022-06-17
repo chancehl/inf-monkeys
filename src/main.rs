@@ -7,10 +7,13 @@ use std::time::Instant;
 #[derive(Parser, Debug)]
 #[clap(author, version, about, long_about = None)]
 struct Args {
-    #[clap(short, long, default_value_t = 100)]
+    #[clap(long, default_value_t = 100)]
     iterations: u32,
 
-    #[clap(short, long, default_value_t = 10)]
+    #[clap(long, default_value_t = 3)]
+    min: u8,
+
+    #[clap(long, default_value_t = 10)]
     max: u8,
 }
 
@@ -27,7 +30,7 @@ fn main() {
         print!("\rProcessing {} of {}...", index, args.iterations);
         stdout().flush().unwrap();
 
-        let word = generate_word(&args.max);
+        let word = generate_word(&args.min, &args.max);
 
         if valid_words.contains(&word) {
             matches.push(word);
@@ -43,12 +46,12 @@ fn main() {
     );
 }
 
-fn generate_word(max: &u8) -> String {
+fn generate_word(min: &u8, max: &u8) -> String {
     let mut word = String::from("");
 
     let mut rng = thread_rng();
 
-    let len: u8 = rng.gen_range(5..*max);
+    let len: u8 = rng.gen_range(*min..*max);
 
     let chars = vec![
         'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R',
