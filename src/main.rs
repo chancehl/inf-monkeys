@@ -2,6 +2,7 @@ use clap::Parser;
 use rand::{thread_rng, Rng};
 use std::fs::File;
 use std::io::{stdout, BufRead, BufReader, Write};
+use std::time::Instant;
 
 #[derive(Parser, Debug)]
 #[clap(author, version, about, long_about = None)]
@@ -18,6 +19,8 @@ fn main() {
     let valid_words = read_words();
     let mut matches: Vec<String> = Vec::new();
 
+    let now = Instant::now();
+
     let mut index = 1;
 
     while index < args.iterations {
@@ -26,14 +29,18 @@ fn main() {
 
         let word = generate_word(&args.max);
 
-         if valid_words.contains(&word) {
-             matches.push(word);
-         }
+        if valid_words.contains(&word) {
+            matches.push(word);
+        }
 
         index = index + 1;
     }
 
-    println!("Found the following matches: {:?}", matches);
+    println!(
+        "Found the following matches: {:?} in {}s",
+        matches,
+        now.elapsed().as_secs()
+    );
 }
 
 fn generate_word(max: &u8) -> String {
